@@ -14,7 +14,8 @@ Este proyecto es una aplicación de gestión de biblioteca que permite crear y g
 - Usa `Ctrl + F5` o selecciona "Iniciar sin depuración".
 
 ## Capturas de pantalla
-![Pantalla Principal](\Libreria\Images\Principal.png)
+![Pantalla Principal]
+![Principal](https://github.com/user-attachments/assets/7dd33519-1106-4434-9515-d803495b0bc4)
 ![Crear Libro](\Libreria\Images\CrearLibro.png)
 ![Crear Autor](\Libreria\Images\CrearAutor.png)
 
