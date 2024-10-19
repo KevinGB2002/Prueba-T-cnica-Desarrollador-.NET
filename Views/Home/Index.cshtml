@@ -1,0 +1,152 @@
+﻿@model X.PagedList.IPagedList<Libreria.Models.Libro>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bienvenido</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="success-alert" class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <!-- Mostrar mensajes de error -->
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessageTitulo))
+    {
+        <div class="text-danger">@ViewBag.ErrorMessageTitulo</div>
+    }
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessageAutor))
+    {
+        <div class="text-danger">@ViewBag.ErrorMessageAutor</div>
+    }
+
+    <!-- Tabla de libros -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Autor</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var libro in Model)
+            {
+                <tr>
+                    <td>@libro.Titulo</td>
+                    <td>@libro.Autor?.Nombre</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <!-- Enlaces de paginación -->
+    <div class="text-center">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }), new PagedListRenderOptions
+      {
+       LiElementClasses = new[] { "page-item" },
+       PageClasses = new[] { "page-link" },
+       LinkToPreviousPageFormat = "Anterior",
+       LinkToNextPageFormat = "Siguiente",
+       DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+       DisplayLinkToLastPage = PagedListDisplayMode.Always,
+       DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+       DisplayLinkToNextPage = PagedListDisplayMode.Always,
+       MaximumPageNumbersToDisplay = 5
+      })
+    </div>
+    <!-- Botón para abrir el modal de "Crear Libro" -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearLibroModal">
+        Agregar Libro
+    </button>
+
+    <!-- Modal de Crear Libro -->
+    <div class="modal fade" id="crearLibroModal" tabindex="-1" aria-labelledby="crearLibroModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crearLibroModalLabel">Crear Nuevo Libro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="crearLibroForm" action="/Home/CrearLibro" method="post">
+                        <div class="form-group">
+                            <label for="Titulo">Título</label>
+                            <input id="Titulo" name="Titulo" class="form-control" required />
+                            <!-- Mensaje de error para el título -->
+                            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessageTitulo))
+                            {
+                                <span class="text-danger">@ViewBag.ErrorMessageTitulo</span>
+                            }
+                        </div>
+                        <div class="form-group">
+                            <label for="AutorID">Seleccione un autor:</label>
+                            <select id="AutorID" name="AutorID" class="form-control" required>
+                                <option value="">-- Seleccione un autor --</option>
+                                @foreach (var autor in ViewBag.Autores)
+                                {
+                                    <option value="@autor.AutorID">@autor.Nombre</option>
+                                }
+                            </select>
+                            <!-- Mensaje de error para el autor -->
+                            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessageAutor))
+                            {
+                                <span class="text-danger">@ViewBag.ErrorMessageAutor</span>
+                            }
+                        </div>
+                        <hr />
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón para abrir el modal de "Crear Autor" -->
+    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#crearAutorModal">
+        Agregar Autor
+    </button>
+
+    <!-- Modal de Crear Autor -->
+    <div class="modal fade" id="crearAutorModal" tabindex="-1" aria-labelledby="crearAutorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crearAutorModalLabel">Crear Nuevo Autor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="crearAutorForm" action="/Home/CrearAutor" method="post">
+                        <div class="form-group">
+                            <label for="Nombre">Nombre del Autor</label>
+                            <input type="text" class="form-control" id="Nombre" name="Nombre" required />
+                            <!-- Mensaje de error para el nombre del autor -->
+                            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessageNombre))
+                            {
+                                <span class="text-danger">@ViewBag.ErrorMessageNombre</span>
+                            }
+                        </div>
+                        <hr />
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        window.setTimeout(function () {
+            var successAlert = document.getElementById('success-alert');
+            if (successAlert) {
+                var alertInstance = new bootstrap.Alert(successAlert);
+                alertInstance.close();
+            }
+        }, 5000);
+    </script>
+}
